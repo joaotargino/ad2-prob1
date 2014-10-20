@@ -8,7 +8,7 @@ Q1:
 Assista esse vídeo com atenção. Perceba que a grande pergunta que Hans Rosling tenta responder é: temos dois mundos separados; o mundo ocidental norte rico e o resto do mundo pobre? Talvez você precise pausar o vídeo para entender, assistir mais de uma vez, etc. 
 a)Trace um esboço do caminho que ele percorreu analisando os dados para responder essas perguntas.  
 b)Anote os termos ou ideias que você não entende ainda.
-
+  O palestrante Hans Rosling ataca um problema e vai quebrando esse problema em partes menores e vai analisando cada fator dessas partes e quebrando ainda mais para ter mais precisão no que se está analisando, nesse caso os países de cada um desses "mundos".
   
 
   Início da análise:
@@ -19,6 +19,7 @@ funcionario <- read.csv("./salarios-ti-regioes.csv")
 funcionarioPrivada = subset(funcionario, Iniciativa.Privada.ou.Concursado =="Iniciativa Privada")
 funcionarioConcursado = subset(funcionario, Iniciativa.Privada.ou.Concursado  =="Concursado")
 funcionarioPosOuCertificacao = subset(funcionario, Pos.Graduacao.ou.Certificacao  =="TRUE")
+funcionarioSemPos = subset(funcionario, Pos.Graduacao.ou.Certificacao  =="FALSE")
 #ver onde funcionarios com certificacao estao, na iniciativa privada ou concursados. e onde ganham mais
 
 funcionarioNordeste = subset(funcionario, Regiao =="Nordeste")
@@ -66,12 +67,14 @@ ggplot(funcionario, aes(Salario.Bruto, fill=Regiao, lty=Regiao)) + geom_density(
 
 Q4:A distribuição que você encontrou é a que você esperava sem olhar os dados? Se não é, você tem alguma suspeita da razão para a diferença?
 
-  	Não. Esperava que a média salarial das regiões Sul e Sudeste fossem as maiores, porém elas ficam abaixo das regiões Nordeste e Centro-Oeste. Possivelmente os casos atípicos de salários causam anomalias nos resultados, como é o caso do Nordeste, que possui um salário extraordinariamente maior que todos os outros. Uma análise possível no caso do Centro-Oeste é que, além de ter uma amostra menor nos dados, esses profissionais são bem qualificados(a maioria possui pós/certificação), sua maioria se concentra em Brasília, possuem muito tempo de experiência profissional em média e a maior parte é concursada.
+  	Não. Esperava que a média salarial das regiões Sul e Sudeste fossem as maiores, porém elas ficam abaixo das regiões Nordeste e Centro-Oeste. Possivelmente os casos atípicos de salários causam anomalias nos resultados, como é o caso do Nordeste, que possui um salário extraordinariamente maior que todos os outros. Uma análise possível no caso do Centro-Oeste é que, além de ter uma amostra menor nos dados, esses profissionais são bem qualificados(a maioria possui pós/certificação), sua maioria se concentra em Brasília, possuem muito tempo de experiência profissional em média e a maior parte é concursada. Quando se analisa a parte com/sem pós, percebe-se que sem pós-graduaço ou certificação, o salário é mais disperso  e atinge valores inferiores.
     
 
 ```{r}
 #visualização da distribuição de salários de quem possui pós ou certificação
 ggplot(funcionarioPosOuCertificacao, aes(Salario.Bruto, fill=Regiao, lty=Regiao)) + geom_density(alpha=.2)
+#visualização da distribuição de salários de quem NAO possui pós ou certificação
+ggplot(funcionarioSemPos, aes(Salario.Bruto, fill=Regiao, lty=Regiao)) + geom_density(alpha=.2)
 ```
 
 
@@ -95,4 +98,4 @@ Q6: Se um profissional de TI deseja ter um salario melhor, qual a(s) dica(s) par
   Seguir carreira de concursado dá uma média/mediana maior de salário, porém a Iniciativa Privada recompensa melhor casos atípicos. Já em relação a localização, a região Centro-Oeste é a mais indicada, pois paga melhor que as demais, além de procurar algum tipo de especialização ou pós graduação, uma vez que esses profissionais possuem salários maiores que os demais.
 
 
-  
+   
