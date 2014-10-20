@@ -40,7 +40,7 @@ Q2: Qual o panorama geral dos profissionais de TI no Brasil sem ainda se preocup
 
   Pela análise, podemos perceber que a maioria dos funcionários se encontram na região Sudeste, sendo sua quantidade maior que a soma das outras regiões. Além disso, uma concentração bem maior na iniciativa privada, 118 contra 36. Interessante observar que na região Sudeste, os funcionários na Iniciativa Privada são 10 vezes mais presentes do que Concursados, 80 contra 8.  Além disso, há uma maioria sem pós-graduação, 53 contra 39. No Centro-Oeste é onde os funcionários possuem mais tempo médio (median) de experiência profissional , 7 anos, excluindo o Norte, pois só há registro de dois funcionários dessa região nos dados.
 
-```{r, echo=FALSE}
+```{r}
 summary(funcionarioNordeste)
 summary(funcionarioSudeste)
 summary(funcionarioSul)
@@ -79,7 +79,7 @@ Q5: É interessante ver a média (mean) salarial para cada região. Como resulta
 
   A mediana retorna resultado bem diferente da média em algumas regiões, o que mostra a existência de outliers, como no caso do Nordeste, onde um salário de 42k influencia bastante no resultado da média, elevando-a injustamente.
 
-```{r, echo=FALSE}
+```{r}
 
 
 media.regiao = with(funcionario, aggregate(Salario.Bruto, list(Regiao), mean))
