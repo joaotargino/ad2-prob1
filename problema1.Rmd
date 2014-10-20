@@ -1,0 +1,98 @@
+---
+title: "problema1"
+author: "Joao Paulo"
+date: "15-10-2014"
+output: html_document
+---
+Q1:
+Assista esse vídeo com atenção. Perceba que a grande pergunta que Hans Rosling tenta responder é: temos dois mundos separados; o mundo ocidental norte rico e o resto do mundo pobre? Talvez você precise pausar o vídeo para entender, assistir mais de uma vez, etc. 
+a)Trace um esboço do caminho que ele percorreu analisando os dados para responder essas perguntas.  
+b)Anote os termos ou ideias que você não entende ainda.
+
+  
+
+  Início da análise:
+```{r}
+library(ggplot2)
+funcionario <- read.csv("./salarios-ti-regioes.csv")
+
+funcionarioPrivada = subset(funcionario, Iniciativa.Privada.ou.Concursado =="Iniciativa Privada")
+funcionarioConcursado = subset(funcionario, Iniciativa.Privada.ou.Concursado  =="Concursado")
+funcionarioPosOuCertificacao = subset(funcionario, Pos.Graduacao.ou.Certificacao  =="TRUE")
+#ver onde funcionarios com certificacao estao, na iniciativa privada ou concursados. e onde ganham mais
+
+funcionarioNordeste = subset(funcionario, Regiao =="Nordeste")
+funcionarioSudeste = subset(funcionario, Regiao =="Sudeste")
+funcionarioSul = subset(funcionario, Regiao =="Sul")
+funcionarioNorte = subset(funcionario, Regiao =="Norte")
+funcionarioCentroOeste = subset(funcionario, Regiao =="Centro-oeste")
+
+barplot(c(nrow(funcionarioNordeste), nrow(funcionarioSudeste), nrow(funcionarioSul), nrow(funcionarioNorte), nrow(funcionarioCentroOeste)), xlab = "Regioes", ylab = "Quantidade", main = "Funcionarios por Regiao", las=2, names=c("Nordeste", "Sudeste", "Sul", "Norte", "Centro-Oeste"))
+
+barplot(c(nrow(funcionarioConcursado), nrow(funcionarioPrivada)), main = "Qtde Concursado/Iniciativa Privada", names=c("Concursado", "Iniciativa Privada "))
+
+
+
+```
+
+
+Q2: Qual o panorama geral dos profissionais de TI no Brasil sem ainda se preocupar com seus salários, apenas com sua localização, função, expertise...? 
+
+  Pela análise, podemos perceber que a maioria dos funcionários se encontram na região Sudeste, sendo sua quantidade maior que a soma das outras regiões. Além disso, uma concentração bem maior na iniciativa privada, 118 contra 36. Interessante observar que na região Sudeste, os funcionários na Iniciativa Privada são 10 vezes mais presentes do que Concursados, 80 contra 8.  Além disso, há uma maioria sem pós-graduação, 53 contra 39. No Centro-Oeste é onde os funcionários possuem mais tempo médio (median) de experiência profissional , 7 anos, excluindo o Norte, pois só há registro de dois funcionários dessa região nos dados.
+
+```{r, echo=FALSE}
+summary(funcionarioNordeste)
+summary(funcionarioSudeste)
+summary(funcionarioSul)
+summary(funcionarioCentroOeste)
+summary(funcionarioNorte)
+summary(funcionarioConcursado)
+summary(funcionarioPrivada)
+
+```
+
+Q3: Os salários estão bem distribuídos no intervalo que vai do menor salário para o maior salário? Ou será que os salários são muito concentrados em um intervalo pequeno de valores? Será que existem salários atípicos (outliers)? 
+
+  Os salários dos concursados estão melhores distribuidos do que os da Iniciativa Privada e são ligeiramente melhores, a mediana do salário dos concursados é maior que da Iniciativa Privada, porém contém mais outliers, enquanto o da iniciativa privada indicam outliers mais extremos, tanto o maior salário quanto o menor diferem muito da média. Analisando as regiões dá pra perceber que no Nordeste vemos esses outliers de uma forma mais acentuada.
+
+
+```{r}
+boxplot(funcionarioConcursado$Salario.Bruto, funcionarioPrivada$Salario.Bruto,  main = "Salarios Concursado/Iniciativa Privada", names=c("Concursado", "Iniciativa Privada "))
+boxplot(funcionarioNordeste$Salario.Bruto, funcionarioSudeste$Salario.Bruto, funcionarioSul$Salario.Bruto, funcionarioNorte$Salario.Bruto, funcionarioCentroOeste$Salario.Bruto, xlab = "Regioes", ylab = "Salarios", main = "Salarios por Regiao", las=2, names=c("Nordeste", "Sudeste", "Sul", "Norte", "Centro-Oeste"))
+ggplot(funcionario, aes(Salario.Bruto, fill=Regiao, lty=Regiao)) + geom_density(alpha=.2)
+
+```
+
+
+Q4:A distribuição que você encontrou é a que você esperava sem olhar os dados? Se não é, você tem alguma suspeita da razão para a diferença?
+
+  	Não. Esperava que a média salarial das regiões Sul e Sudeste fossem as maiores, porém elas ficam abaixo das regiões Nordeste e Centro-Oeste. Possivelmente os casos atípicos de salários causam anomalias nos resultados, como é o caso do Nordeste, que possui um salário extraordinariamente maior que todos os outros. Uma análise possível no caso do Centro-Oeste é que, além de ter uma amostra menor nos dados, esses profissionais são bem qualificados(a maioria possui pós/certificação), sua maioria se concentra em Brasília, possuem muito tempo de experiência profissional em média e a maior parte é concursada.
+    
+
+```{r}
+#visualização da distribuição de salários de quem possui pós ou certificação
+ggplot(funcionarioPosOuCertificacao, aes(Salario.Bruto, fill=Regiao, lty=Regiao)) + geom_density(alpha=.2)
+```
+
+
+Q5: É interessante ver a média (mean) salarial para cada região. Como resultado, apresente uma tabela com o nome da região e a sua média salarial ordenada da região com a maior média salarial para a menor. Se você tivesse usado a mediana (median) em vez da média como métrica de interesse, o resultado seria o mesmo? Analise a situação e justifique. Aproveite e salve esta tabela em um arquivo do tipo csv. 
+
+  A mediana retorna resultado bem diferente da média em algumas regiões, o que mostra a existência de outliers, como no caso do Nordeste, onde um salário de 42k influencia bastante no resultado da média, elevando-a injustamente.
+
+```{r, echo=FALSE}
+
+
+media.regiao = with(funcionario, aggregate(Salario.Bruto, list(Regiao), mean))
+colnames(media.regiao) = c("Regiao", "Media.Salarial")
+
+media.regiao = media.regiao[order(media.regiao$Media.Salarial, decreasing=TRUE),]
+write.table(media.regiao, file="./mediaSalarios.csv", sep= ",")
+```
+
+
+Q6: Se um profissional de TI deseja ter um salario melhor, qual a(s) dica(s) para ele? 
+
+  Seguir carreira de concursado dá uma média/mediana maior de salário, porém a Iniciativa Privada recompensa melhor casos atípicos. Já em relação a localização, a região Centro-Oeste é a mais indicada, pois paga melhor que as demais, além de procurar algum tipo de especialização ou pós graduação, uma vez que esses profissionais possuem salários maiores que os demais.
+
+
+  
